@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TerrainFunction
+public class TerrainFunction : IDensityFunction
 {
     
-    private float Density(Vector3 position)
+    public float Density(Vector3 position)
     {
 
         float density = 0f;
@@ -13,7 +13,7 @@ public class TerrainFunction
         return density;
     }
 
-    private float Density(float x, float y, float z)
+    public float Density(float x, float y, float z)
     {
 
         float density = 0f;
@@ -22,7 +22,7 @@ public class TerrainFunction
     }
 
 
-    private Vector3 Normal(Vector3 position, float d = 0.001f)
+    public Vector3 Normal(Vector3 position, float d = 0.001f)
     {
 
         Vector3 normal = new Vector3((Density(position.x + d, position.y, position.z) - Density(position.x - d, position.y, position.z)) / 2 / d,

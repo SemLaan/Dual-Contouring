@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
+
 public class DualContouring : MonoBehaviour
 {
     
-    private Vector3 FindBestVertex(IDensityFunction densityFunction, int x, int y, int z)
+
+
+    private Vector3 FindBestVertex(IDensityFunction densityFunction, IVertexPositionSolver vertexSolver, int x, int y, int z)
     {
 
         // Evaluate density function at all corners of voxel xyz
@@ -34,9 +39,43 @@ public class DualContouring : MonoBehaviour
                 if ((cornerDensities[0, dy, dz] > 0) != (cornerDensities[1, dy, dz] > 0))
                     signChanges.Add(new Vector3(x + Adapt(cornerDensities[0, dy, dz], cornerDensities[1, dy, dz]), y + dy, z + dz));
 
+        if (signChanges.Count <= 1)
+            return Vector3.negativeInfinity;
+
         // TODO calculate normals
 
-        // TODO qef solve
+        return vertexSolver.Solve(new Vector3(x, y, z), signChanges, new List<Vector3>());
+    }
+
+
+    private void DualContourMesh(IDensityFunction densityFunction, IVertexPositionSolver vertexSolver, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
+    {
+
+        List<Vector3> vertexList = new List<Vector3>();
+        Dictionary<Vector3, int> vertexIndices = new Dictionary<Vector3, int>();
+
+        for (int x = xmin; x <= xmax; x++)
+            for (int y = ymin; y <= ymax; y++)
+                for (int z = zmin; z <= zmax; z++)
+                {
+
+                    Vector3 vertex = FindBestVertex(densityFunction, vertexSolver, x, y, z);
+                    if (vertex == Vector3.negativeInfinity)
+                        continue;
+
+                    vertexList.Add(vertex);
+                    vertexIndices[vertex] = vertexList.Count - 1;
+                }
+
+        List<int> tris = new List<int>();
+
+        for (int x = xmin; x <= xmax; x++)
+            for (int y = ymin; y <= ymax; y++)
+                for (int z = zmin; z <= zmax; z++)
+                {
+
+
+                }
     }
 
 

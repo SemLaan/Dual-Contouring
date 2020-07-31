@@ -8,7 +8,26 @@ public class TerrainFunction : IDensityFunction
     public float Density(Vector3 position)
     {
 
-        float density = 0f;
+        float density = 1f;
+
+        if (position.y > 50)
+            density = -1;
+
+        float height = Mathf.PerlinNoise(position.x * 0.01f, position.z * 0.01f) * 130;
+        height += Mathf.PerlinNoise(position.x * 0.03f, position.z * 0.03f) * 10;
+        height += Mathf.PerlinNoise(position.x * 0.09f, position.z * 0.09f) * 5;
+        height += Mathf.PerlinNoise(position.x * 0.018f, position.z * 0.018f) * 2.5f;
+        height += Mathf.PerlinNoise(position.x * 0.036f, position.z * 0.036f) * 1.25f;
+
+        if (height < 55)
+        {
+
+            height *= 0.05f;
+            height += 52;
+
+        }
+
+        density = (int)((position.y - height) * 50);
 
         return density;
     }
@@ -16,9 +35,7 @@ public class TerrainFunction : IDensityFunction
     public float Density(float x, float y, float z)
     {
 
-        float density = 0f;
-
-        return density;
+        return Density(new Vector3(x, y, z));
     }
 
 
